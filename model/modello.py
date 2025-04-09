@@ -57,7 +57,6 @@ class Model:
                 self._ricorsione_list(parziale, nuove_rimanenti)
                 parziale.pop()  # rimuovo l'ultimo elemento, backtracking
 
-
 if __name__ == '__main__':
     model = Model()
     start_time = time()
