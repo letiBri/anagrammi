@@ -60,7 +60,7 @@ class Model:
 if __name__ == '__main__':
     model = Model()
     start_time = time()
-    risultato = model.calcola_anagrammi_list("")
+    risultato = model.calcola_anagrammi_list("dog")
     end_time = time()
     print(f"Elapsed time: {end_time - start_time}")
     print(risultato)
