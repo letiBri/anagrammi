@@ -2,9 +2,12 @@ import copy
 from time import time
 from functools import lru_cache
 
+from database.DAO import DAO
+
 
 class Model:
     def __init__(self):
+        self.listParole = []
         self.lista_soluzioni = []
         self.set_soluzioni = set()  # con l'insieme non mi mette i doppioni
 
@@ -14,6 +17,7 @@ class Model:
         # dove passiamo questa collection?
         self.lista_soluzioni = []  # dobbiamo pulire la lista soluzioni per ogni volta che richiamo il metodo con una parola diversa, altrimenti salva TUTTE le sol per ogni parola
         self.set_soluzioni = set()  # lo pulisco
+        self.loadParole()  # carico tutte le parole del DB
         self._ricorsione("", parola)  # inizialmente la soluzione parziale è la stringa vuota
         # return self.lista_soluzioni
         return self.set_soluzioni  # così mi esclude i doppioni
@@ -21,8 +25,8 @@ class Model:
     # @lru_cache(maxsize=None) # in questo modo salva le copie nella cache e se ne trova una uguale non la rimette
     def _ricorsione(self, parziale, rimanenti):  # ci servono le soluzioni parziali e poi le lettere rimanenti, soluzioni è la collection dove salviamo tutte le sol parziali
         if len(rimanenti) == 0:  # condizione terminale: quando la collection di rimanenti è di lunghezza 0, non posso più formare soluzioni
-            #print(parziale)
-            #self.lista_soluzioni.append(parziale)
+            # print(parziale)
+            # self.lista_soluzioni.append(parziale)
             self.set_soluzioni.add(parziale)  # aggiungo la sol parziale al set
         else:
             # for lettera in rimanenti: # se lavoriamo con stringhe
@@ -38,8 +42,11 @@ class Model:
                 # mettiamo il backtracking # ogni volta che torniamo indietro dobbiamo togliere la lettera aggiunta nella soluzione parziale
                 parziale = parziale[:-1]  # considero tutte le lettere tranne l'ultima
 
+    def loadParole(self):
+        self.listParole = DAO.getParole()
 
-    # soluzione alternativa: utilizzo liste di caratteri e ciclo sulla lista
+
+# soluzione alternativa: utilizzo liste di caratteri e ciclo sulla lista
     def calcola_anagrammi_list(self, parola: str):
         self.lista_soluzioni = []
         self._ricorsione_list([], parola)
@@ -57,11 +64,11 @@ class Model:
                 self._ricorsione_list(parziale, nuove_rimanenti)
                 parziale.pop()  # rimuovo l'ultimo elemento, backtracking
 
+
 if __name__ == '__main__':
     model = Model()
     start_time = time()
-    risultato = model.calcola_anagrammi_list("dog")
+    risultato = model.calcola_anagrammi("dog")
     end_time = time()
     print(f"Elapsed time: {end_time - start_time}")
     print(risultato)
-
